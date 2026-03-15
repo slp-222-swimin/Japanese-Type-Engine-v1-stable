@@ -1,3 +1,5 @@
+# 本エンジン使用アプリ「Practype」は[こちら](https://slp-222-swimin.github.io/Japanese-Type-Engine-v1-stable/example-cdn/)
+
 # 📦 JPTE (Japanese Type Engine)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
