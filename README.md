@@ -63,16 +63,36 @@ engine.newWord("きのうとうきょうへいった");
 
 // 2. キー入力を処理 (1文字ずつ)
 const result = engine.input("k");
-
-/* 
-  result = { 
-    type: 'correct', 
-    currentBuffer: 'k', 
-    remainingRomaji: 'inou...', 
-    expectedKeys: ['i'] 
-  } 
-*/
 ```
+
+### 📊 取得可能な情報 (Data API)
+
+`engine.input(key)` の戻り値、またはイベントを通じて以下の詳細なデータを取得できます。
+
+#### 1. `InputResult` オブジェクト
+タイピングの進捗や状態をリアルタイムに反映したオブジェクトです。
+
+| プロパティ | 型 | 説明 |
+| :--- | :--- | :--- |
+| `type` | `string` | `"correct"` (正解), `"mistake"` (ミス), `"complete"` (語句完了) |
+| `currentBuffer` | `string` | 現在入力中のローマ字バッファ (例: `"ky"`) |
+| `remainingRomaji` | `string` | 最短経路に基づいた残りのローマ字ガイド |
+| `remainingKana` | `string` | まだ入力の終わっていないかな文字列 |
+| `expectedKeys` | `string[]` | 次に入力可能なキーのリスト (分岐も考慮) |
+| `isFinished` | `boolean` | 全文の入力が完了したか |
+| `segmentIndex` | `number` | かな文字列のうち、どこまで消化したかの文字インデックス |
+
+#### 2. `engine.stats` (統計データ)
+エンジンのインスタンスが保持する累計統計データです。
+
+| プロパティ | 説明 |
+| :--- | :--- |
+| `kpm` | 1分あたりの正解打鍵数 (Keys Per Minute) |
+| `accuracy` | 正解率 (0.0 〜 1.0) |
+| `correctCount` | 合計正解打鍵数 |
+| `mistakeCount` | 合計ミス打鍵数 |
+| `currentCombo` | 現在の連続正解数 |
+| `maxCombo` | 最大コンボ記録 |
 
 ---
 
