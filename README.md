@@ -1,4 +1,4 @@
-#テストアプリ「Practype」はこちらから
+# テストアプリ「Practype」はこちらから
 * https://slp-222-swimin.github.io/Japanese-Type-Engine-v1-stable/example-cdn/
 
 # 📦 JPTE (Japanese Type Engine)
