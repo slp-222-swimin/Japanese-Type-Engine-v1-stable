@@ -1,0 +1,14 @@
+{
+  "name": "jpte",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "test": "node tests/engine.test.js && node tests/input.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
