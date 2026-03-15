@@ -704,8 +704,11 @@ window.addEventListener('keydown', (e) => {
         engine.input(e.key);
     }
 
-    // Disable Enter key during gameplay to prevent unexpected behavior (like triggering buttons)
+    // Disable Enter and Space key during gameplay to prevent unexpected behavior (like triggering buttons)
     if (e.key === 'Enter') {
+        e.preventDefault();
+    }
+    if (e.key === 'Space') {
         e.preventDefault();
     }
 });
