@@ -1,90 +1,97 @@
 # 📦 JPTE (Japanese Type Engine)
 
-JPTE (ジェプト) は、ブラウザ標準のフォーム挙動を完全に排し、JavaScriptで生のキー入力を解析・照合することで、究極のタイピング体験を提供するロジックコア・ライブラリです。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/slp-222-swimin/Japanese-Type-Engine-v1-stable)
 
-## 🚀 特徴
+**JPTE (ジェプト)** は、モダンなWebアプリケーションのための高密度な日本語タイピング・ロジックコアです。ブラウザ標準のフォーム挙動を完全に排除し、JavaScriptによる低レイテンシなキー入力解析を実現。グラフ理論に基づく柔軟な経路探索により、あらゆるローマ字入力パターンを網羅します。
 
-- **有向グラフによる経路探索**: 一文における「すべての正解パス」を網羅した動的グラフを構築し、柔軟なローマ字入力をサポートします。
-- **高度な促音・撥音処理**: 「っ」の子音自動重複や、文脈に応じた「ん」の自動解決（単発 'n' の許容など）を完璧に処理します。
-- **競技タイピング指標**: KPM (Keys Per Minute)、正確性、最大コンボ数などの統計をリアルタイムで算出します。
-- **表示同期システム**: 常に最短のローマ字ガイドをリアルタイムに提供し、ユーザーをガイドします。
+---
 
-## 🛠 セットアップ
+## 🚀 主な機能 (Core Features)
 
-### 🌐 CDN経由で直接インポート (ブラウザ)
+- **📈 有向グラフによる経路探索**: 一文における「すべての正解パス」を網羅。
+- **⌨️ 高度な促音・撥音処理**: 「っ」の子音自動重複や、文脈に応じた「ん」の自動解決。
+- **📊 プロフェッショナル統計**: KPM (Keys Per Minute)、正確性、最大コンボなどの統計を計算。
+- **💡 リアルタイムガイド**: 常に「最短のローマ字ガイド」を算出して提供。
 
-ビルドプロセスなしで、HTMLの `<script type="module">` から直接読み込むことができます。
+---
+
+## 🛠 セットアップ (Installation)
+
+### 1. 🌐 CDN経由 (ブラウザで即座に開始)
+ビルドツールを使わず、HTMLの `<script type="module">` で直接インポートできます。
 
 ```javascript
-import { JPTEEngine } from 'https://cdn.jsdelivr.net/gh/ユーザー名/JPTE/src/index.js';
+/* GitHubリポジトリからjsDelivr経由で読み込む */
+import { JPTEEngine } from 'https://cdn.jsdelivr.net/gh/slp-222-swimin/Japanese-Type-Engine-v1-stable/src/index.js';
 ```
 
-### インストール (npm/GitHub)
-
-ビルドツールを使用している場合は、リポジトリをパッケージとして追加できます。
+### 2. 📦 npm / GitHub
+開発環境にパッケージとして導入する場合：
 
 ```bash
-# npm経由で直接インストール
-npm install github:ユーザー名/JPTE
+# GitHubリポジトリを直接インストール
+npm install github:slp-222-swimin/Japanese-Type-Engine-v1-stable
 
-# またはリポジトリをクローン
-git clone https://github.com/ユーザー名/JPTE.git
+# またはクローンして利用
+git clone https://github.com/slp-222-swimin/Japanese-Type-Engine-v1-stable.git
 ```
 
-### クラスの初期化
+---
 
-モジュールをインポートして初期化します。
+## 📖 使い方 (Manual)
 
-ライブラリをプロジェクト内に配置し、ES Modulesとしてインポートします。
+### インスタンスの生成 (Initialization)
 
 ```javascript
 import { JPTEEngine } from './src/index.js';
 
 const engine = new JPTEEngine({  
   options: {  
-    strictNn: true,           // 文末の「ん」に「nn」を強制するか  
-    allowBackspace: true,     // バッファの巻き戻しを許可するか  
-    ignoreSpace: true         // スペース入力を無視するか  
+    strictNn: true,           // 文末の「ん」を "nn" 固定にするか (厳格モード)
+    allowBackspace: true,     // バックスペースによる戻りを許可
+    ignoreSpace: true         // スペースキーを判定から除外
   }  
 });
 ```
 
-## ⚙️ コアメソッド
-
-### `newWord(kana)`
-判定用グラフを構築します。
+### ワードの設定と入力 (Input Flow)
 
 ```javascript
+// 1. 判定対象を設定
 engine.newWord("きのうとうきょうへいった");
-```
 
-### `input(key)`
-ユーザーのキー入力をエンジンに渡し、判定結果を取得します。
-
-```javascript
+// 2. キー入力を処理 (1文字ずつ)
 const result = engine.input("k");
-// result: { type: 'correct', currentBuffer: 'k', remainingRomaji: 'inou...', ... }
+
+/* 
+  result = { 
+    type: 'correct', 
+    currentBuffer: 'k', 
+    remainingRomaji: 'inou...', 
+    expectedKeys: ['i'] 
+  } 
+*/
 ```
 
-### イベントシステム
+---
 
-```javascript
-engine.on('correct', (data) => console.log('正解！'));
-engine.on('mistake', (data) => console.log('ミス:', data.expectedKeys));
-engine.on('complete', (stats) => console.log('完了！', stats));
-```
+## 🎮 デモ (Interactive Demo)
 
-## 🎮 デモ
+本リポジトリには、最新のガラスモーフィズム・デザインを採用したデモ UI が含まれています。
 
-本リポジトリには、JPTEの実力を体験できるデモが同梱されています。
+1. ローカルサーバーを起動 (`npx serve .` など)
+2. `http://localhost:3000/example/` をブラウザで開く
 
-1. ローカルサーバーを起動
-   ```bash
-   npx serve .
-   ```
-2. ブラウザで `http://localhost:3000/example/` を開く
+---
 
-## ⚖️ ライセンス
+## ⚖️ ライセンス (License)
 
-JPTE (Japanese Type Engine) is under **MIT License**.
-本プロジェクトは、[ChatGPT](https://chatgpt.com)、[Gemini](https://gemini.google.com)、[Google Antigravity](https://antigravity.google/)を使用して作成されました。
+Copyright (c) 2026 slp-222-swimin.
+JPTE is under the **MIT License**.
+
+---
+
+### 🏛 クレジット
+本プロジェクトの開発には、以下の先進的なAI技術が活用されています。
+[ChatGPT](https://chatgpt.com) / [Gemini](https://gemini.google.com) / [Google Antigravity](https://antigravity.google/)
