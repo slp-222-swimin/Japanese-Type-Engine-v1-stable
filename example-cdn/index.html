@@ -1,67 +1,159 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JPTE - High-Performance Japanese Typing Engine (CDN Demo)</title>
-  <meta name="description" content="JPTE (Japanese Type Engine) - A graph-based JavaScript library for building next-generation Japanese typing experiences. This demo uses the CDN version of the library.">
-  <meta name="keywords" content="Japanese typing, romaji engine, JavaScript, typing game, CDN library, Web typing">
-  
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "JPTE (Japanese Type Engine)",
-    "operatingSystem": "Web",
-    "applicationCategory": "DeveloperApplication",
-    "description": "High-performance Japanese typing logic library for JavaScript.",
-    "softwareVersion": "1.0.0"
-  }
-  </script>
-
-  <link rel="stylesheet" href="./index.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practype - Premium Japanese Typing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-container">
-    <header>
-      <div class="brand">JPTE<span class="version">v1</span></div>
-      <div class="stats-panel">
-        <div class="stat-box">
-          <span class="stat-label">KPM</span>
-          <span class="stat-value" id="ui-kpm">0</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Accuracy</span>
-          <span class="stat-value" id="ui-accuracy">0.0%</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Combo</span>
-          <span class="stat-value" id="ui-combo">0</span>
-        </div>
-      </div>
-    </header>
+    <div class="background-effects">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
 
-    <main class="typing-area" id="typing-area">
-      <div class="instructions" id="instructions">Press Space to Start</div>
-      
-      <div class="game-content hidden" id="game-content">
-        <div class="sentence" id="sentence">昨日、東京へ行った。</div>
-        <div class="furigana" id="furigana">きのうとうきょうへいった</div>
-        
-        <div class="romaji-display" id="romaji-display">
-          <span class="typed" id="typed-romaji"></span><span class="expected" id="expected-romaji"></span>
+    <!-- Start Screen Modal -->
+    <div id="start-screen" class="modal-overlay active">
+        <div class="modal-content glass-panel">
+            <h1 class="game-logo">Prac<span class="accent">type</span></h1>
+            <p class="subtitle">次世代日本語タイピング体験</p>
+            <div class="best-score-display">
+                <span class="bs-label">自己ベスト: </span>
+                <span id="best-score-value" class="bs-value">0</span>
+            </div>
+            <div class="instructions">
+                <div class="instruction-card">
+                    <span class="icon">⏳</span>
+                    <div class="desc">
+                        <span class="label">制限時間</span>
+                        <span class="value">90秒</span>
+                    </div>
+                </div>
+                <div class="instruction-card">
+                    <span class="icon">🔥</span>
+                    <div class="desc">
+                        <span class="label">コンボボーナス</span>
+                        <span class="value">連続正解で増加</span>
+                    </div>
+                </div>
+                <div class="instruction-card">
+                    <span class="icon">✨</span>
+                    <div class="desc">
+                        <span class="label">ノーミスボーナス</span>
+                        <span class="value">5単語で+3000pt</span>
+                    </div>
+                </div>
+            </div>
+            <button id="start-btn" class="primary-btn pulse-anim">SPACEキーで開始</button>
         </div>
+    </div>
+
+    <!-- Main Game UI -->
+    <main id="game-container" class="hidden">
         
-        <div class="progress-bar-container">
-          <div class="progress-bar" id="progress-bar"></div>
-        </div>
-      </div>
+        <!-- Header: Timer & Score -->
+        <header class="game-header">
+            <div class="stat-badge timer-badge">
+                <span class="label">TIME</span>
+                <span id="timer-display" class="value">90</span>
+            </div>
+            <div class="score-container">
+                <span class="label">SCORE</span>
+                <div id="score-display" class="score-value">0</div>
+                <div id="score-popup" class="score-popup">+100</div>
+            </div>
+        </header>
+
+        <!-- Typing Area -->
+        <section class="typing-section glass-panel center-panel">
+            <div class="word-display">
+                <div id="kanji-display" class="kanji-text"></div>
+                <div id="kana-display" class="kana-text"></div>
+            </div>
+            
+            <div class="romaji-display">
+                <span id="typed-romaji" class="typed"></span><span id="remaining-romaji" class="remaining"></span>
+            </div>
+            
+            <div class="progress-bar-container">
+                <div id="word-progress" class="progress-fill"></div>
+            </div>
+        </section>
+
+        <!-- Side Stats -->
+        <aside class="side-stats">
+            <div class="stat-card glass-panel">
+                <div class="stat-item">
+                    <span class="stat-label">KPM</span>
+                    <span id="kpm-display" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Accuracy</span>
+                    <span id="accuracy-display" class="stat-value">100%</span>
+                </div>
+                <div class="stat-item highlight-stat">
+                    <span class="stat-label">Combo</span>
+                    <span id="combo-display" class="stat-value combo-anim">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Word Streak</span>
+                    <span id="word-streak-display" class="stat-value">0 / 5</span>
+                </div>
+            </div>
+        </aside>
     </main>
 
-    <div class="effect-layer" id="effect-layer"></div>
-  </div>
+    <!-- Result Screen Modal -->
+    <div id="result-screen" class="modal-overlay hidden">
+        <div class="modal-content glass-panel result-panel">
+            <h2 class="result-title">TIME UP!</h2>
+            
+            <div class="rank-display-section">
+                <canvas id="rank-canvas"></canvas>
+                <div id="rank-symbol" class="rank-symbol">C</div>
+            </div>
 
-  <script type="module" src="./index.js"></script>
+            <div class="final-score-section">
+                <span class="result-label">FINAL SCORE</span>
+                <div id="final-score" class="final-score-value text-gradient">0</div>
+            </div>
+
+            <div class="result-stats-grid">
+                <div class="result-stat-box">
+                    <span class="rs-label">KPM</span>
+                    <span id="result-kpm" class="rs-value">0</span>
+                </div>
+                <div class="result-stat-box">
+                    <span class="rs-label">Accuracy</span>
+                    <span id="result-accuracy" class="rs-value">0%</span>
+                </div>
+                <div class="result-stat-box">
+                    <span class="rs-label">Max Combo</span>
+                    <span id="result-max-combo" class="rs-value">0</span>
+                </div>
+                <div class="result-stat-box">
+                    <span class="rs-label">Max Word Streak</span>
+                    <span id="result-max-word-combo" class="rs-value">0</span>
+                </div>
+                <div class="result-stat-box">
+                    <span class="rs-label">Correct Keys</span>
+                    <span id="result-correct" class="rs-value">0</span>
+                </div>
+                <div class="result-stat-box">
+                    <span class="rs-label">Misses</span>
+                    <span id="result-miss" class="rs-value miss-color">0</span>
+                </div>
+            </div>
+
+            <button id="restart-btn" class="primary-btn">もう一度プレイ</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js" type="module"></script>
 </body>
 </html>
